@@ -5,13 +5,15 @@ import Yesod
 data HelloWorld = HelloWorld
 
 mkYesod "HelloWorld" [parseRoutes|
-/ HomeR GET
+/#String HomeR GET
 |]
 
 instance Yesod HelloWorld
 
-getHomeR :: Handler RepHtml
-getHomeR = defaultLayout [whamlet|Hello world!|]
+getHomeR :: String -> Handler RepHtmlJson
+getHomeR name = do
+    let json = object ["name" .= name]
+    defaultLayoutJson [whamlet|Hello #{name}|] json
 
 main :: IO ()
 main = warpDebug 3000 HelloWorld
